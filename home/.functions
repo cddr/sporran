@@ -1,0 +1,101 @@
+function kafka-topics () {
+    docker run --net=host \
+               --rm confluentinc/cp-kafka:3.2.2 \
+               kafka-topics $@
+}
+
+function kafka-console-consumer () {
+    docker run --net=host \
+           --rm confluentinc/cp-kafka:3.2.2 \
+           kafka-console-consumer $@
+}
+
+function kafka-avro-console-producer () {
+    docker run --net=host \
+           --rm confluentinc/cp-kafka:3.2.2 \
+           kafka-avro-console-producer $@
+}
+
+function kafka-console-producer () {
+    docker run --net=host \
+           --rm confluentinc/cp-kafka:3.2.2 \
+           kafka-console-producer $@
+}
+
+function kafka-avro-console-consumer () {
+    docker run --net=host \
+           --rm confluentinc/cp-kafka:3.2.2 \
+           kafka-avro-console-consumer $@
+}
+
+
+function describe-topic () {
+    kafka-topics --zookeeper $ZOOKEEPER_CONNECT \
+                 --describe \
+                 --topic $1
+}
+
+function create-topic () {
+    topic=$1
+    type=$2
+    partitions=$3
+    replication_factor=$4
+
+    case "$type" in
+        changelog)
+            kafka-topics --create \
+                --zookeeper $ZOOKEEPER_CONNECT \
+                --config cleanup.policy=compact \
+                --partitions $partitions \
+                --replication-factor $replication_factor \
+                --topic $topic
+            ;;
+
+        eventlog)
+            kafka-topics --create \
+                --zookeeper $ZOOKEEPER_CONNECT \
+                --config cleanup.policy=delete \
+                --partitions $partitions \
+                --replication-factor $replication_factor \
+                --topic $topic
+            ;;
+    esac
+}
+
+function delete-topic () {
+    kafka-topics --zookeeper $ZOOKEEPER_CONNECT \
+                 --delete \
+                 --topic $1
+}
+
+function list-topics () {
+    kafka-topics --zookeeper $ZOOKEEPER_CONNECT \
+                 --list
+}
+
+function consume-from-beginning () {
+    kafka-console-consumer --zookeeper $ZOOKEEPER_CONNECT \
+                           --property print.key=true \
+                           --from-beginning \
+                           --topic $1
+}
+
+function consume () {
+    kafka-console-consumer --zookeeper $ZOOKEEPER_CONNECT \
+                           --property print.key=true \
+                           --topic $1
+}
+
+function avro-consume-from-beginning () {
+    kafka-avro-console-consumer --zookeeper $ZOOKEEPER_CONNECT \
+                                --property schema.registry.url=$SCHEMA_REGISTRY_URL \
+                                --from-beginning \
+                                --topic $1
+}
+
+function avro-consume () {
+    kafka-avro-console-consumer --zookeeper $ZOOKEEPER_CONNECT \
+                                --property schema.registry.url=$SCHEMA_REGISTRY_URL \
+                                --topic $1
+}
+
