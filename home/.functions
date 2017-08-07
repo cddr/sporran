@@ -1,31 +1,31 @@
 function kafka-topics () {
-    docker run --net=host \
-               --rm confluentinc/cp-kafka:3.2.2 \
-               kafka-topics $@
+    sudo -E docker run --net=host \
+         --rm confluentinc/cp-kafka:3.2.2 \
+         kafka-topics $@
 }
 
 function kafka-console-consumer () {
-    docker run --net=host \
-           --rm confluentinc/cp-kafka:3.2.2 \
-           kafka-console-consumer $@
+    sudo -E docker run --net=host \
+         --rm confluentinc/cp-kafka:3.2.2 \
+         kafka-console-consumer $@
 }
 
 function kafka-avro-console-producer () {
-    docker run --net=host \
+    sudo -E docker run --net=host \
            --rm confluentinc/cp-kafka:3.2.2 \
            kafka-avro-console-producer $@
 }
 
 function kafka-console-producer () {
-    docker run --net=host \
+    sudo -E docker run --net=host \
            --rm confluentinc/cp-kafka:3.2.2 \
            kafka-console-producer $@
 }
 
 function kafka-avro-console-consumer () {
-    docker run --net=host \
-           --rm confluentinc/cp-kafka:3.2.2 \
-           kafka-avro-console-consumer $@
+    sudo -E docker run --net=host \
+         --rm confluentinc/cp-kafka:3.2.2 \
+         kafka-avro-console-consumer $@
 }
 
 
